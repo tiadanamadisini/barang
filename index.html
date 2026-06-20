@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manifest Barang Azraei</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#1F2620;
+  --bg-alt:#252D26;
+  --paper:#DCD2B4;
+  --paper-dark:#CBBF9C;
+  --paper-line:rgba(43,42,31,0.14);
+  --ink:#2B2A1F;
+  --ink-soft:#6b6650;
+  --brass:#B8893E;
+  --brass-bright:#D1A355;
+  --green:#4C6444;
+  --green-bright:#5d7a52;
+  --red:#9C3B2E;
+  --red-bright:#b54a3b;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background-color:var(--bg);
+  background-image:radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size:22px 22px;
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  min-height:100vh;
+  padding:28px 18px 80px;
+}
+
+.app{max-width:1080px;margin:0 auto;}
+
+/* ---------- HEADER ---------- */
+.header{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:18px;flex-wrap:wrap;
+  border-bottom:3px double rgba(216,205,176,0.35);
+  padding-bottom:18px;margin-bottom:26px;
+}
+.header-text h1{
+  font-family:'Special Elite',monospace;
+  color:var(--paper);
+  font-size:30px;letter-spacing:1.5px;margin:0 0 6px;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.25);
+}
+.header-text p{
+  color:rgba(220,210,180,0.6);
+  font-size:13px;letter-spacing:0.6px;margin:0;
+  font-family:'JetBrains Mono',monospace;
+}
+.stamp{
+  font-family:'Special Elite',monospace;
+  border:3px solid currentColor;
+  border-radius:6px;
+  padding:8px 16px;
+  font-size:14px;letter-spacing:1px;
+  transform:rotate(-6deg);
+  display:inline-flex;align-items:center;gap:8px;
+  opacity:0.95;
+  background:rgba(0,0,0,0.08);
+}
+.stamp.green{color:var(--green-bright);}
+.stamp.red{color:var(--red-bright);}
+.stamp.idle{color:rgba(220,210,180,0.45);border-style:dashed;}
+@keyframes slam{
+  0%{transform:rotate(-6deg) scale(2.2);opacity:0;}
+  60%{transform:rotate(-6deg) scale(0.92);opacity:1;}
+  100%{transform:rotate(-6deg) scale(1);opacity:1;}
+}
+.stamp.slam{animation:slam 0.45s ease-out;}
+
+/* ---------- STATS ---------- */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px;
+}
+.stat-card{
+  background:var(--paper);
+  border-left:5px solid var(--brass);
+  border-radius:4px;
+  padding:14px 16px;
+  box-shadow:0 3px 0 rgba(0,0,0,0.18);
+}
+.stat-card .label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;letter-spacing:0.8px;color:var(--ink-soft);
+  text-transform:uppercase;margin-bottom:6px;
+}
+.stat-card .value{
+  font-family:'Special Elite',monospace;
+  font-size:24px;color:var(--ink);
+}
+
+/* ---------- LAYOUT ---------- */
+.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start;}
+@media (max-width:880px){.grid{grid-template-columns:1fr;} .stats{grid-template-columns:repeat(2,1fr);}}
+
+.panel{
+  background:var(--paper);
+  border-radius:6px;
+  padding:18px 18px 20px;
+  box-shadow:0 4px 0 rgba(0,0,0,0.18);
+  margin-bottom:18px;
+}
+.panel-title{
+  font-family:'Special Elite',monospace;
+  font-size:15px;letter-spacing:1px;color:var(--ink);
+  margin:0 0 2px;
+}
+.panel-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--ink-soft);margin:0 0 14px;
+}
+
+/* ---------- ADD FORM ---------- */
+.add-form{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.add-form input{
+  font-family:'JetBrains Mono',monospace;
+  border:1.5px solid var(--paper-dark);
+  background:rgba(255,255,255,0.35);
+  border-radius:4px;padding:9px 10px;font-size:13px;color:var(--ink);
+  outline:none;
+}
+.add-form input:focus{border-color:var(--brass);}
+.add-form input#code-input{width:120px;text-transform:uppercase;}
+.add-form input#name-input{flex:1;min-width:140px;font-family:'Inter',sans-serif;}
+.btn{
+  font-family:'JetBrains Mono',monospace;
+  border:none;border-radius:4px;cursor:pointer;
+  padding:9px 16px;font-size:12.5px;letter-spacing:0.5px;font-weight:700;
+  transition:transform 0.1s ease, filter 0.15s ease;
+}
+.btn:active{transform:scale(0.97);}
+.btn-brass{background:var(--brass);color:#2B2200;}
+.btn-brass:hover{filter:brightness(1.08);}
+.btn-brass:disabled{background:var(--paper-dark);color:rgba(43,42,31,0.4);cursor:not-allowed;}
+
+/* ---------- SEARCH ---------- */
+.search-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;}
+.search-row input{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  border:1px solid var(--paper-dark);background:rgba(255,255,255,0.3);
+  border-radius:4px;padding:7px 10px;outline:none;width:170px;
+}
+.count-pill{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);}
+
+/* ---------- CHECKLIST ---------- */
+.checklist{max-height:380px;overflow-y:auto;border-top:1px dashed var(--paper-line);}
+.row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 4px;border-bottom:1px dashed var(--paper-line);
+}
+.row.checked{background:rgba(76,100,68,0.10);}
+.row .checkbox{
+  width:20px;height:20px;flex:none;border:2px solid var(--ink-soft);border-radius:3px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  background:rgba(255,255,255,0.4);
+}
+.row.checked .checkbox{background:var(--green);border-color:var(--green);}
+.row .checkbox svg{width:13px;height:13px;display:none;}
+.row.checked .checkbox svg{display:block;}
+.row .code-badge{
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;
+  background:rgba(43,42,31,0.08);border-radius:3px;padding:3px 7px;flex:none;
+  letter-spacing:0.4px;
+}
+.row .name{flex:1;font-size:13.5px;}
+.row.checked .name{color:var(--ink-soft);text-decoration:line-through;}
+.row .del{
+  flex:none;border:none;background:none;cursor:pointer;color:var(--red);
+  font-family:'JetBrains Mono',monospace;font-size:11px;opacity:0.55;padding:4px 6px;
+}
+.row .del:hover{opacity:1;}
+.empty-state{
+  text-align:center;padding:30px 16px;border:2px dashed var(--paper-dark);
+  border-radius:6px;color:var(--ink-soft);font-size:13px;line-height:1.6;
+}
+
+.finish-btn{width:100%;margin-top:14px;padding:13px;font-size:13.5px;letter-spacing:1px;border-radius:5px;}
+
+/* ---------- CHART ---------- */
+.chart-wrap{position:relative;}
+.chart-svg{width:100%;height:auto;display:block;}
+.alert-missing{
+  margin-top:12px;background:rgba(156,59,46,0.10);border:1px solid rgba(156,59,46,0.35);
+  border-radius:5px;padding:9px 12px;font-size:12px;color:var(--red);
+  font-family:'JetBrains Mono',monospace;line-height:1.5;
+}
+
+/* ---------- HISTORY ---------- */
+.history-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;}
+.history-item{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;
+  background:rgba(255,255,255,0.3);border-radius:5px;border-left:4px solid var(--paper-dark);
+}
+.history-item.ok{border-left-color:var(--green);}
+.history-item.miss{border-left-color:var(--red);}
+.history-item .date{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;flex:none;width:80px;}
+.history-item .desc{flex:1;font-size:11.5px;color:var(--ink-soft);}
+.history-item .pct{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;flex:none;}
+.history-item.ok .pct{color:var(--green);}
+.history-item.miss .pct{color:var(--red);}
+
+/* ---------- SAVE STATUS ---------- */
+.save-status{
+  position:fixed;bottom:14px;right:16px;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.5px;
+  color:rgba(220,210,180,0.55);background:rgba(0,0,0,0.25);
+  padding:6px 10px;border-radius:20px;backdrop-filter:blur(2px);
+  transition:opacity 0.3s ease;
+}
+
+.loading-screen{
+  color:rgba(220,210,180,0.6);font-family:'JetBrains Mono',monospace;
+  text-align:center;padding:60px 0;font-size:13px;letter-spacing:0.5px;
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <div class="loading-screen" id="loading-screen">Memuatkan manifest&hellip;</div>
+</div>
+
+<div class="save-status" id="save-status">Sedia</div>
+
+<script>
+const STORAGE_KEY = 'azraei-inventory';
+let state = { items: [], history: [], checkedIds: [] };
+let searchTerm = '';
+let dataLoaded = false;
+
+/* ---------------- STORAGE ---------------- */
+async function loadData(){
+  try{
+    const result = await window.storage.get(STORAGE_KEY, false);
+    if(result && result.value){
+      const parsed = JSON.parse(result.value);
+      state = {
+        items: parsed.items || [],
+        history: parsed.history || [],
+        checkedIds: parsed.checkedIds || []
+      };
+    }
+  }catch(e){
+    state = { items: [], history: [], checkedIds: [] };
+  }
+  dataLoaded = true;
+  renderApp();
+}
+
+let saveTimer = null;
+function saveData(){
+  setSaveStatus('Menyimpan&hellip;');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try{
+      const result = await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+      setSaveStatus(result ? 'Disimpan ✓' : 'Ralat menyimpan');
+    }catch(e){
+      setSaveStatus('Ralat menyimpan ⚠');
+    }
+  }, 250);
+}
+
+function setSaveStatus(text){
+  const el = document.getElementById('save-status');
+  if(el) el.innerHTML = text;
+}
+
+/* ---------------- HELPERS ---------------- */
+function uid(){ return 'i' + Math.random().toString(36).slice(2,10); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtDateShort(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('ms-MY',{day:'2-digit',month:'2-digit'});
+}
+function fmtDateFull(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('ms-MY',{day:'2-digit',month:'short',year:'numeric'});
+}
+function todayISO(){ return new Date().toISOString(); }
+
+/* ---------------- RENDER ROOT ---------------- */
+function renderApp(){
+  const app = document.getElementById('app');
+  const latest = state.history.length ? state.history[state.history.length-1] : null;
+
+  let stampHtml;
+  if(!latest){
+    stampHtml = `<div class="stamp idle">— BELUM DISEMAK —</div>`;
+  } else if(latest.checkedCount === latest.total){
+    stampHtml = `<div class="stamp green">✓ LENGKAP &middot; ${fmtDateShort(latest.date)}</div>`;
+  } else {
+    stampHtml = `<div class="stamp red">✕ ${latest.total - latest.checkedCount} HILANG &middot; ${fmtDateShort(latest.date)}</div>`;
+  }
+
+  const checkedCount = state.checkedIds.length;
+  const total = state.items.length;
+  const lastCheckLabel = latest ? fmtDateShort(latest.date) : '—';
+
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-text">
+        <h1>MANIFEST BARANG AZRAEI</h1>
+        <p>SENARAI SEMAK INVENTORI &middot; RUTIN MINGGUAN</p>
+      </div>
+      <div id="stamp-slot">${stampHtml}</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card"><div class="label">Jumlah Item</div><div class="value">${total}</div></div>
+      <div class="stat-card"><div class="label">Ditanda Minggu Ini</div><div class="value">${checkedCount}/${total}</div></div>
+      <div class="stat-card"><div class="label">Belum Ditanda</div><div class="value">${total - checkedCount}</div></div>
+      <div class="stat-card"><div class="label">Semakan Terakhir</div><div class="value" style="font-size:17px;">${lastCheckLabel}</div></div>
+    </div>
+
+    <div class="grid">
+      <div class="col-left">
+        <div class="panel">
+          <div class="panel-title">DAFTAR ITEM</div>
+          <div class="panel-sub">Tambah kod &amp; nama setiap barang Azraei</div>
+          <div class="add-form">
+            <input type="text" id="code-input" placeholder="KOD cth: AZ-001" maxlength="20">
+            <input type="text" id="name-input" placeholder="Nama barang cth: Beg sekolah" maxlength="60">
+            <button class="btn btn-brass" id="add-btn">+ DAFTAR</button>
+          </div>
+
+          <div class="search-row">
+            <span class="count-pill">${total} item didaftarkan</span>
+            <input type="text" id="search-input" placeholder="Cari kod / nama&hellip;" value="${escapeHtml(searchTerm)}">
+          </div>
+
+          <div class="checklist" id="checklist"></div>
+
+          <button class="btn btn-brass finish-btn" id="finish-btn" ${total===0?'disabled':''}>
+            ✓ SELESAI PEMERIKSAAN MINGGU INI
+          </button>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="panel">
+          <div class="panel-title">TREND KELENGKAPAN INVENTORI</div>
+          <div class="panel-sub">Peratus item lengkap bagi setiap pemeriksaan</div>
+          <div class="chart-wrap" id="chart-wrap"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">REKOD PEMERIKSAAN</div>
+          <div class="panel-sub">${state.history.length} kali disemak setakat ini</div>
+          <div class="history-list" id="history-list"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  renderChecklist();
+  renderChart();
+  renderHistory();
+  attachStaticEvents();
+}
+
+/* ---------------- CHECKLIST ---------------- */
+function renderChecklist(){
+  const wrap = document.getElementById('checklist');
+  const term = searchTerm.trim().toLowerCase();
+  const items = state.items.filter(it =>
+    !term || it.code.toLowerCase().includes(term) || it.name.toLowerCase().includes(term)
+  );
+
+  if(state.items.length === 0){
+    wrap.innerHTML = `<div class="empty-state">Tiada item didaftarkan lagi.<br>Tambah kod barang pertama Azraei di atas untuk mula menjejak inventori.</div>`;
+    return;
+  }
+  if(items.length === 0){
+    wrap.innerHTML = `<div class="empty-state">Tiada item sepadan dengan carian "${escapeHtml(searchTerm)}".</div>`;
+    return;
+  }
+
+  wrap.innerHTML = items.map(it => {
+    const checked = state.checkedIds.includes(it.id);
+    return `
+      <div class="row ${checked?'checked':''}" data-id="${it.id}">
+        <div class="checkbox" data-action="toggle">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="code-badge">${escapeHtml(it.code)}</span>
+        <span class="name">${escapeHtml(it.name)}</span>
+        <button class="del" data-action="delete" title="Padam item">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ---------------- CHART (SVG strip recorder) ---------------- */
+function renderChart(){
+  const wrap = document.getElementById('chart-wrap');
+  const h = state.history;
+
+  if(h.length === 0){
+    wrap.innerHTML = `<div class="empty-state">Belum ada rekod pemeriksaan.<br>Tandakan item dan klik "Selesai Pemeriksaan" untuk mula menjejak trend.</div>`;
+    return;
+  }
+
+  const W = 600, H = 260, padL = 36, padR = 14, padT = 14, padB = 30;
+  const chartW = W - padL - padR, chartH = H - padT - padB;
+  const n = h.length;
+  const points = h.map((entry, i) => {
+    const pct = entry.total ? (entry.checkedCount / entry.total) * 100 : 0;
+    const x = n === 1 ? padL + chartW/2 : padL + (i/(n-1)) * chartW;
+    const y = padT + (1 - pct/100) * chartH;
+    return {x, y, pct, entry};
+  });
+
+  const gridLines = [0,25,50,75,100].map(v => {
+    const y = padT + (1 - v/100) * chartH;
+    return `
+      <line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="rgba(43,42,31,0.15)" stroke-width="1" stroke-dasharray="${v===0?'0':'3,3'}"/>
+      <text x="${padL-6}" y="${y+3}" font-size="9" font-family="JetBrains Mono, monospace" fill="var(--ink-soft)" text-anchor="end">${v}%</text>
+    `;
+  }).join('');
+
+  const linePath = points.map((p,i) => `${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const areaPath = `${linePath} L${points[n-1].x.toFixed(1)},${padT+chartH} L${points[0].x.toFixed(1)},${padT+chartH} Z`;
+
+  const showEveryLabel = n <= 8;
+  const xLabels = points.map((p,i) => {
+    if(!showEveryLabel && i % Math.ceil(n/8) !== 0 && i !== n-1) return '';
+    return `<text x="${p.x.toFixed(1)}" y="${H-8}" font-size="9" font-family="JetBrains Mono, monospace" fill="var(--ink-soft)" text-anchor="middle">${fmtDateShort(p.entry.date)}</text>`;
+  }).join('');
+
+  const markers = points.map(p => {
+    const color = p.pct === 100 ? 'var(--green)' : 'var(--red)';
+    return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5" fill="${color}" stroke="var(--paper)" stroke-width="2"/>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <svg class="chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+      ${gridLines}
+      <path d="${areaPath}" fill="var(--brass)" opacity="0.12"/>
+      <path d="${linePath}" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+      ${markers}
+      ${xLabels}
+    </svg>
+  `;
+
+  // missing-items alert for latest entry
+  const latest = h[h.length-1];
+  let alertHtml = '';
+  if(latest.missingCodes && latest.missingCodes.length){
+    alertHtml = `<div class="alert-missing">⚠ HILANG (${fmtDateFull(latest.date)}): ${latest.missingCodes.map(escapeHtml).join(', ')}</div>`;
+    wrap.insertAdjacentHTML('beforeend', alertHtml);
+  }
+}
+
+/* ---------------- HISTORY LIST ---------------- */
+function renderHistory(){
+  const wrap = document.getElementById('history-list');
+  if(state.history.length === 0){
+    wrap.innerHTML = `<div class="empty-state">Tiada rekod lagi.</div>`;
+    return;
+  }
+  const rows = [...state.history].reverse().map(entry => {
+    const pct = entry.total ? Math.round((entry.checkedCount/entry.total)*100) : 0;
+    const ok = entry.checkedCount === entry.total;
+    const desc = ok ? 'Semua item lengkap' : `${entry.total - entry.checkedCount} item hilang: ${entry.missingCodes.join(', ')}`;
+    return `
+      <div class="history-item ${ok?'ok':'miss'}">
+        <span class="date">${fmtDateShort(entry.date)}</span>
+        <span class="desc">${escapeHtml(desc)}</span>
+        <span class="pct">${pct}%</span>
+      </div>
+    `;
+  }).join('');
+  wrap.innerHTML = rows;
+}
+
+/* ---------------- EVENTS ---------------- */
+function attachStaticEvents(){
+  document.getElementById('add-btn').addEventListener('click', handleAddItem);
+  document.getElementById('name-input').addEventListener('keydown', e => { if(e.key==='Enter') handleAddItem(); });
+  document.getElementById('code-input').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('name-input').focus(); });
+  document.getElementById('search-input').addEventListener('input', e => {
+    searchTerm = e.target.value;
+    renderChecklist();
+  });
+  document.getElementById('checklist').addEventListener('click', handleChecklistClick);
+  document.getElementById('finish-btn').addEventListener('click', handleFinishCheck);
+}
+
+function handleAddItem(){
+  const codeInput = document.getElementById('code-input');
+  const nameInput = document.getElementById('name-input');
+  const code = codeInput.value.trim().toUpperCase();
+  const name = nameInput.value.trim();
+  if(!code || !name) return;
+
+  state.items.push({ id: uid(), code, name });
+  // newly added items default to "checked" in the in-progress session, since they were just confirmed present
+  state.checkedIds.push(state.items[state.items.length-1].id);
+
+  codeInput.value = '';
+  nameInput.value = '';
+  codeInput.focus();
+  saveData();
+  renderApp();
+}
+
+function handleChecklistClick(e){
+  const row = e.target.closest('.row');
+  if(!row) return;
+  const id = row.dataset.id;
+  const action = e.target.closest('[data-action]')?.dataset.action;
+
+  if(action === 'delete'){
+    state.items = state.items.filter(it => it.id !== id);
+    state.checkedIds = state.checkedIds.filter(cid => cid !== id);
+    saveData();
+    renderApp();
+    return;
+  }
+
+  // default / toggle: clicking anywhere on row (except delete) toggles
+  if(state.checkedIds.includes(id)){
+    state.checkedIds = state.checkedIds.filter(cid => cid !== id);
+  } else {
+    state.checkedIds.push(id);
+  }
+  saveData();
+  renderChecklist();
+  refreshStatsOnly();
+}
+
+function refreshStatsOnly(){
+  const checkedCount = state.checkedIds.length;
+  const total = state.items.length;
+  const cards = document.querySelectorAll('.stat-card .value');
+  if(cards.length >= 3){
+    cards[1].textContent = `${checkedCount}/${total}`;
+    cards[2].textContent = `${total - checkedCount}`;
+  }
+}
+
+function handleFinishCheck(){
+  if(state.items.length === 0) return;
+  const total = state.items.length;
+  const checkedCount = state.checkedIds.length;
+  const missingCodes = state.items.filter(it => !state.checkedIds.includes(it.id)).map(it => it.code);
+
+  state.history.push({
+    id: uid(),
+    date: todayISO(),
+    total,
+    checkedCount,
+    missingCodes
+  });
+  state.checkedIds = []; // next week, every item must be re-verified
+
+  saveData();
+  renderApp();
+
+  const stampSlot = document.getElementById('stamp-slot');
+  const stamp = stampSlot.querySelector('.stamp');
+  if(stamp){ stamp.classList.add('slam'); }
+}
+
+/* ---------------- INIT ---------------- */
+loadData();
+</script>
+</body>
+</html>
